@@ -9,7 +9,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/android-chrome-512x512.png">
 <style>
   :root{
     --pink:#ff3d7f;
@@ -42,7 +46,7 @@
     position:fixed;
     inset:0;
     z-index:0;
-    background-image:url('gta6bg.jpg');
+    background-image:url('assets/gta6-bg.jpg');
     background-size:cover;
     background-position:center top;
   }
@@ -52,12 +56,11 @@
     inset:0;
     z-index:1;
     background:
-      radial-gradient(ellipse at center, rgba(8,4,16,0) 35%, rgba(8,4,16,.55) 100%),
+      radial-gradient(ellipse at center, rgba(8,4,16,.15) 0%, rgba(8,4,16,.5) 100%),
       linear-gradient(180deg,
-        rgba(8,4,16,.35) 0%,
-        rgba(8,4,16,.25) 40%,
-        rgba(8,4,16,.72) 78%,
-        rgba(8,4,16,.94) 100%);
+        rgba(8,4,16,.4) 0%,
+        rgba(8,4,16,.3) 50%,
+        rgba(8,4,16,.5) 100%);
   }
 
   /* ---- Content ---- */
@@ -174,12 +177,19 @@
   }
 
   /* ---- CTA buttons ---- */
+  .cta-wrap{
+    display:flex;
+    flex-direction:column;
+    width:fit-content;
+    max-width:100%;
+    margin-top:4.5vh;
+  }
+
   .cta-row{
     display:flex;
     flex-wrap:wrap;
     justify-content:center;
     gap:clamp(10px,2vw,18px);
-    margin-top:4.5vh;
   }
 
   .cta{
@@ -218,6 +228,71 @@
     50%{ background-position:100% 50%, 0 0; }
     100%{ background-position:0% 50%, 0 0; }
   }
+
+  /* ---- Featured CTA (Extended Look) ---- */
+  .cta-featured{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5em;
+    width:100%;
+    margin-bottom:clamp(10px,2vw,16px);
+    padding:.9em 2em;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:clamp(.95rem, 2vw, 1.2rem);
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:#170a12;
+    border-radius:999px;
+    border:none;
+    background-image:linear-gradient(100deg, #ffd27a, #ff9e57, #ff3d7f, #ff6fa8, #ff9e57, #ffd27a);
+    background-size:400% 400%;
+    overflow:hidden;
+    isolation:isolate;
+    animation:gradient-flow 7s ease-in-out infinite, cta-pulse 3s ease-in-out infinite;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .cta-featured .play-icon{
+    width:0;
+    height:0;
+    border-top:.42em solid transparent;
+    border-bottom:.42em solid transparent;
+    border-left:.62em solid #170a12;
+    flex-shrink:0;
+  }
+
+  @keyframes cta-pulse{
+    0%{ box-shadow:0 0 22px 2px rgba(255,158,87,.45), 0 0 0 0 rgba(255,61,127,.35); }
+    50%{ box-shadow:0 0 38px 8px rgba(255,61,127,.65), 0 0 0 6px rgba(255,61,127,.08); }
+    100%{ box-shadow:0 0 22px 2px rgba(255,158,87,.45), 0 0 0 0 rgba(255,61,127,.35); }
+  }
+
+  .cta-featured::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-60%;
+    width:40%;
+    height:100%;
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+    transform:skewX(-20deg);
+    animation:cta-shimmer 3.2s ease-in-out infinite;
+  }
+
+  @keyframes cta-shimmer{
+    0%{ left:-60%; }
+    45%{ left:130%; }
+    100%{ left:130%; }
+  }
+
+  .cta-featured:hover, .cta-featured:focus-visible{
+    transform:translateY(-3px) scale(1.03);
+  }
+
+  .cta-featured:active{ transform:translateY(-1px) scale(1.01); }
 
   .cta::before{
     content:"";
@@ -274,18 +349,24 @@
       <div class="unit"><div class="num" id="seconds">00</div><div class="label">Seconds</div></div>
     </div>
 
-    <p class="done-message" id="doneMessage">C'est le jour J. Bienvenue à Vice City.</p>
+    <p class="done-message" id="doneMessage">C'est fini ! Bienvenue à Vice City !!! </p>
 
-    <div class="cta-row">
-      <a class="cta" href="https://store.rockstargames.com/game/buy-gta-vi" target="_blank" rel="noopener">Preorder</a>
-      <a class="cta" href="https://www.rockstargames.com/videos/rkoCtr1r" target="_blank" rel="noopener">Trailer 1</a>
-      <a class="cta" href="https://www.rockstargames.com/videos/cpys7u21" target="_blank" rel="noopener">Trailer 2</a>
+    <div class="cta-wrap">
+      <a class="cta-featured" href="https://www.youtube.com/watch?v=tJbzMqJGH4k" target="_blank" rel="noopener">
+        <span class="play-icon"></span>
+        Extended Look
+      </a>
+      <div class="cta-row">
+        <a class="cta" href="https://store.rockstargames.com/game/buy-gta-vi" target="_blank" rel="noopener">Preorder</a>
+        <a class="cta" href="https://www.rockstargames.com/videos/rkoCtr1r" target="_blank" rel="noopener">Trailer 1</a>
+        <a class="cta" href="https://www.rockstargames.com/videos/cpys7u21" target="_blank" rel="noopener">Trailer 2</a>
+      </div>
     </div>
   </main>
 
 <script>
-    // Release: Thursday 19 November 2026, 00:00 France/Belgium time (CET, UTC+1)
-  const target = new Date("2026-11-18T23:00:00Z").getTime();
+  // Release: Thursday 19 November 2026, 06:00 France time (CET, UTC+1) = 05:00 UTC
+  const target = new Date("2026-11-19T05:00:00Z").getTime();
 
   const daysEl = document.getElementById('days');
   const hoursEl = document.getElementById('hours');
