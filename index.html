@@ -35,6 +35,7 @@
     min-height:100vh;
     display:flex;
     flex-direction:column;
+    overflow-x:hidden;
   }
 
   /* ---- Background artwork ---- */
@@ -328,12 +329,295 @@
     .countdown{ border-radius:14px; }
     .unit{ padding:14px 2px; }
   }
+
+  /* ---- Side drawer : Pre-load countdown ---- */
+  .side{
+    --pw:min(270px, calc(100vw - 56px));
+    position:fixed;
+    top:50%;
+    right:0;
+    z-index:20;
+    display:flex;
+    align-items:stretch;
+    transform:translate(0,-50%);
+    transition:transform .55s cubic-bezier(.22,1,.36,1);
+  }
+
+  .side.collapsed{
+    transform:translate(var(--pw),-50%);
+  }
+
+  .side-handle{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:.9em;
+    width:44px;
+    padding:18px 0;
+    cursor:pointer;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:1.05rem;
+    letter-spacing:.2em;
+    color:var(--text);
+    background:var(--panel-bg);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    border:1px solid rgba(255,158,87,.4);
+    border-right:none;
+    border-radius:14px 0 0 14px;
+    animation:border-flow 7s ease-in-out infinite;
+    transition:filter .3s ease;
+  }
+
+  .side-handle:hover, .side-handle:focus-visible{
+    filter:brightness(1.25);
+    outline:none;
+  }
+
+  .side-handle .handle-text{
+    writing-mode:vertical-rl;
+    transform:rotate(180deg);
+    white-space:nowrap;
+    background:linear-gradient(100deg, #ffd27a, #ff9e57, #ff3d7f, #ff6fa8, #ff9e57, #ffd27a);
+    background-size:400% 400%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:gradient-flow 7s ease-in-out infinite;
+  }
+
+  .side-handle .chevron{
+    width:9px;
+    height:9px;
+    border-top:2px solid var(--orange);
+    border-left:2px solid var(--orange);
+    transform:rotate(135deg); /* points right = "fold away" */
+    transition:transform .45s ease;
+    flex-shrink:0;
+  }
+
+  .side.collapsed .chevron{
+    transform:rotate(-45deg); /* points left = "unfold" */
+  }
+
+  .side-panel{
+    width:var(--pw);
+    padding:20px 16px 18px;
+    text-align:center;
+    background:var(--panel-bg);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    border:1px solid rgba(255,158,87,.4);
+    border-right:none;
+    border-radius:0 0 0 14px;
+    border-radius:0;
+    animation:border-flow 7s ease-in-out infinite;
+  }
+
+  .side-title{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:1.45rem;
+    letter-spacing:.1em;
+    line-height:1.05;
+    background:linear-gradient(100deg, #ffd27a, #ff9e57, #ff3d7f, #ff6fa8, #ff9e57, #ffd27a);
+    background-size:400% 400%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:gradient-flow 7s ease-in-out infinite, glow-flow 7s ease-in-out infinite;
+  }
+
+  .side-sub{
+    margin:.5rem 0 1rem;
+    font-size:.6rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+
+  .side-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:12px;
+    overflow:hidden;
+  }
+
+  .side-grid .unit{
+    padding:12px 4px;
+    border-left:1px solid rgba(255,255,255,.14);
+    border-top:1px solid rgba(255,255,255,.14);
+  }
+
+  .side-grid .unit:nth-child(odd){ border-left:none; }
+  .side-grid .unit:nth-child(-n+2){ border-top:none; }
+
+  .side-grid .unit .num{
+    font-size:clamp(1.9rem, 6vw, 2.5rem);
+  }
+
+  .side-grid .unit .label{
+    margin-top:.4rem;
+    font-size:.55rem;
+    letter-spacing:.22em;
+  }
+
+  .side-done{
+    display:none;
+    padding:6px 0 2px;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:1.5rem;
+    letter-spacing:.06em;
+    line-height:1.15;
+    background:linear-gradient(100deg, #ffd27a, #ff9e57, #ff3d7f, #ff6fa8, #ff9e57, #ffd27a);
+    background-size:400% 400%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:gradient-flow 7s ease-in-out infinite;
+  }
+
+  @media (max-width:480px){
+    .side-handle{ width:38px; font-size:.95rem; }
+    .side-panel{ padding:16px 12px 14px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .side{ transition:none; }
+  }
+
+  /* ---- Timezone picker ---- */
+  .tz{
+    position:fixed;
+    top:16px;
+    right:16px;
+    z-index:30;
+  }
+
+  .tz-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:.7em;
+    padding:.7em 1.15em;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--text);
+    cursor:pointer;
+    background:var(--panel-bg);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    border:1.5px solid rgba(255,158,87,.55);
+    border-radius:999px;
+    animation:border-flow 7s ease-in-out infinite;
+    transition:transform .3s ease, filter .3s ease;
+  }
+
+  .tz-btn:hover, .tz-btn:focus-visible{
+    transform:translateY(-2px);
+    filter:brightness(1.2);
+    outline:none;
+  }
+
+  .tz-btn .tz-flag{ font-size:1.15rem; line-height:1; }
+
+  .tz-btn .tz-label{
+    background:linear-gradient(100deg, #ffd27a, #ff9e57, #ff3d7f, #ff6fa8, #ff9e57, #ffd27a);
+    background-size:400% 400%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:gradient-flow 7s ease-in-out infinite;
+  }
+
+  .tz-btn .tz-chevron{
+    width:7px;
+    height:7px;
+    border-right:2px solid var(--orange);
+    border-bottom:2px solid var(--orange);
+    transform:rotate(45deg) translate(-2px,-2px);
+    transition:transform .3s ease;
+    flex-shrink:0;
+  }
+
+  .tz.open .tz-chevron{ transform:rotate(-135deg) translate(-2px,-2px); }
+
+  .tz-menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
+    width:min(330px, calc(100vw - 32px));
+    max-height:min(62vh, 430px);
+    overflow-y:auto;
+    padding:6px;
+    background:rgba(12,6,22,.93);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,158,87,.45);
+    border-radius:16px;
+    box-shadow:0 12px 40px rgba(0,0,0,.5), 0 0 24px rgba(255,61,127,.18);
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,158,87,.5) transparent;
+  }
+
+  .tz.open .tz-menu{ display:block; }
+
+  .tz-item{
+    display:flex;
+    align-items:center;
+    gap:.8em;
+    width:100%;
+    padding:.6em .8em;
+    font-family:'Space Mono', monospace;
+    font-size:.72rem;
+    text-align:left;
+    color:var(--text);
+    cursor:pointer;
+    background:none;
+    border:none;
+    border-radius:10px;
+  }
+
+  .tz-item:hover, .tz-item:focus-visible{
+    background:rgba(255,158,87,.14);
+    outline:none;
+  }
+
+  .tz-item[aria-selected="true"]{
+    background:linear-gradient(100deg, rgba(255,210,122,.2), rgba(255,61,127,.22));
+    box-shadow:inset 0 0 0 1px rgba(255,158,87,.5);
+  }
+
+  .tz-item .flag{ font-size:1.25rem; line-height:1; flex-shrink:0; }
+  .tz-item .off{ font-weight:700; min-width:4.4em; flex-shrink:0; }
+  .tz-item .city{ color:var(--text-dim); line-height:1.3; }
+
+  @media (max-width:480px){
+    .tz{ top:10px; right:10px; }
+    .tz-btn{ padding:.6em .95em; font-size:.66rem; }
+  }
 </style>
 </head>
 <body>
 
   <div class="bg"></div>
   <div class="bg-overlay"></div>
+
+  <!-- Timezone picker -->
+  <div class="tz" id="tz">
+    <button class="tz-btn" id="tzBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="tzMenu" title="Changer de fuseau horaire">
+      <span class="tz-flag" id="tzFlag">🇫🇷</span>
+      <span class="tz-label" id="tzLabel">UTC+1</span>
+      <span class="tz-chevron" aria-hidden="true"></span>
+    </button>
+    <div class="tz-menu" id="tzMenu" role="listbox" aria-label="Fuseau horaire"></div>
+  </div>
 
   <main>
     <h1 class="title">GTA VI RELEASE COUNTDOWN</h1>
@@ -360,9 +644,31 @@
     </div>
   </main>
 
+  <!-- Side drawer : Pre-load countdown -->
+  <aside class="side" id="side" aria-label="Compte à rebours du pre-loading">
+    <button class="side-handle" id="sideToggle" type="button" aria-expanded="true" aria-controls="sidePanel" title="Afficher / masquer le compte à rebours du pre-load">
+      <span class="chevron" aria-hidden="true"></span>
+      <span class="handle-text">PRE-LOAD</span>
+    </button>
+    <div class="side-panel" id="sidePanel">
+      <div class="side-title">PRE-LOAD COUNTDOWN</div>
+      <div class="side-sub">12 novembre 2026 · 00h00 · heure locale</div>
+
+      <div class="side-grid" id="preloadCountdown">
+        <div class="unit"><div class="num" id="pDays">00</div><div class="label">Days</div></div>
+        <div class="unit"><div class="num" id="pHours">00</div><div class="label">Hours</div></div>
+        <div class="unit"><div class="num" id="pMinutes">00</div><div class="label">Minutes</div></div>
+        <div class="unit"><div class="num" id="pSeconds">00</div><div class="label">Seconds</div></div>
+      </div>
+
+      <p class="side-done" id="preloadDone">Le pre-load est disponible !</p>
+    </div>
+  </aside>
+
 <script>
-  // Release: Thursday 19 November 2026, 06:00 France time (CET, UTC+1) = 05:00 UTC
-  const target = new Date("2026-11-18T23:00:00Z").getTime();
+  // Release: 19 November 2026, 00:00 LOCAL time of the selected timezone (default UTC+1).
+  // Recomputed by applyZone() whenever the timezone changes.
+  let target = Date.UTC(2026, 10, 19, 0, 0, 0) - 1 * 3600000;
 
   const daysEl = document.getElementById('days');
   const hoursEl = document.getElementById('hours');
@@ -380,9 +686,10 @@
     if(diff <= 0){
       countdownEl.style.display = 'none';
       doneMessageEl.style.display = 'block';
-      clearInterval(timer);
       return;
     }
+    countdownEl.style.display = '';
+    doneMessageEl.style.display = '';
 
     const days = Math.floor(diff / (1000*60*60*24));
     const hours = Math.floor((diff / (1000*60*60)) % 24);
@@ -397,6 +704,171 @@
 
   tick();
   const timer = setInterval(tick, 1000);
+
+  // ---- Pre-load countdown ----
+  // Pre-load: 12 November 2026, 00:00 LOCAL time of the selected timezone (default UTC+1).
+  // Recomputed by applyZone() whenever the timezone changes.
+  let preloadTarget = Date.UTC(2026, 10, 12, 0, 0, 0) - 1 * 3600000;
+
+  const pDaysEl = document.getElementById('pDays');
+  const pHoursEl = document.getElementById('pHours');
+  const pMinutesEl = document.getElementById('pMinutes');
+  const pSecondsEl = document.getElementById('pSeconds');
+  const preloadCountdownEl = document.getElementById('preloadCountdown');
+  const preloadDoneEl = document.getElementById('preloadDone');
+
+  function preloadTick(){
+    const diff = preloadTarget - Date.now();
+
+    if(diff <= 0){
+      preloadCountdownEl.style.display = 'none';
+      preloadDoneEl.style.display = 'block';
+      return;
+    }
+    preloadCountdownEl.style.display = '';
+    preloadDoneEl.style.display = '';
+
+    pDaysEl.textContent = pad(Math.floor(diff / (1000*60*60*24)));
+    pHoursEl.textContent = pad(Math.floor((diff / (1000*60*60)) % 24));
+    pMinutesEl.textContent = pad(Math.floor((diff / (1000*60)) % 60));
+    pSecondsEl.textContent = pad(Math.floor((diff / 1000) % 60));
+  }
+
+  preloadTick();
+  const preloadTimer = setInterval(preloadTick, 1000);
+
+  // ---- Side drawer toggle ----
+  const sideEl = document.getElementById('side');
+  const sideToggle = document.getElementById('sideToggle');
+
+  function setSide(open, save){
+    sideEl.classList.toggle('collapsed', !open);
+    sideToggle.setAttribute('aria-expanded', String(open));
+    if(save){
+      try{ localStorage.setItem('gta6-preload-open', open ? '1' : '0'); }catch(e){}
+    }
+  }
+
+  // Initial state: remembered choice, otherwise open on desktop / folded on small screens
+  let saved = null;
+  try{ saved = localStorage.getItem('gta6-preload-open'); }catch(e){}
+  setSide(saved !== null ? saved === '1' : window.innerWidth > 700, false);
+
+  sideToggle.addEventListener('click', function(){
+    setSide(sideEl.classList.contains('collapsed'), true);
+  });
+
+  // ---- Timezone picker ----
+  // Both countdowns aim at 00:00 LOCAL time (release: 19 Nov 2026, pre-load: 12 Nov 2026)
+  // in the selected timezone (fixed UTC offsets, no daylight saving).
+  const ZONES = [
+    {off:-11, city:'Pago Pago',          country:'Samoa américaines',        flag:'🇦🇸'},
+    {off:-10, city:'Honolulu',           country:'États-Unis',               flag:'🇺🇸'},
+    {off:-9,  city:'Anchorage',          country:'États-Unis',               flag:'🇺🇸'},
+    {off:-8,  city:'Los Angeles',        country:'États-Unis',               flag:'🇺🇸'},
+    {off:-7,  city:'Denver',             country:'États-Unis',               flag:'🇺🇸'},
+    {off:-6,  city:'Mexico',             country:'Mexique',                  flag:'🇲🇽'},
+    {off:-5,  city:'New York',           country:'États-Unis',               flag:'🇺🇸'},
+    {off:-4,  city:'Santiago',           country:'Chili',                    flag:'🇨🇱'},
+    {off:-3,  city:'Buenos Aires',       country:'Argentine',                flag:'🇦🇷'},
+    {off:-2,  city:'Fernando de Noronha',country:'Brésil',                   flag:'🇧🇷'},
+    {off:-1,  city:'Praia',              country:'Cap-Vert',                 flag:'🇨🇻'},
+    {off:0,   city:'Londres',            country:'Royaume-Uni',              flag:'🇬🇧'},
+    {off:1,   city:'Paris',              country:'France',                   flag:'🇫🇷'},
+    {off:2,   city:'Le Caire',           country:'Égypte',                   flag:'🇪🇬'},
+    {off:3,   city:'Moscou',             country:'Russie',                   flag:'🇷🇺'},
+    {off:4,   city:'Dubaï',              country:'Émirats arabes unis',      flag:'🇦🇪'},
+    {off:5,   city:'Karachi',            country:'Pakistan',                 flag:'🇵🇰'},
+    {off:6,   city:'Dhaka',              country:'Bangladesh',               flag:'🇧🇩'},
+    {off:7,   city:'Bangkok',            country:'Thaïlande',                flag:'🇹🇭'},
+    {off:8,   city:'Pékin',              country:'Chine',                    flag:'🇨🇳'},
+    {off:9,   city:'Tokyo',              country:'Japon',                    flag:'🇯🇵'},
+    {off:10,  city:'Sydney',             country:'Australie',                flag:'🇦🇺'},
+    {off:11,  city:'Nouméa',             country:'Nouvelle-Calédonie',       flag:'🇫🇷'},
+    {off:12,  city:'Auckland',           country:'Nouvelle-Zélande',         flag:'🇳🇿'},
+    {off:13,  city:'Apia',               country:'Samoa',                    flag:'🇼🇸'},
+    {off:14,  city:'Kiritimati',         country:'Kiribati',                 flag:'🇰🇮'}
+  ];
+
+  const tzEl = document.getElementById('tz');
+  const tzBtn = document.getElementById('tzBtn');
+  const tzMenu = document.getElementById('tzMenu');
+  const tzFlagEl = document.getElementById('tzFlag');
+  const tzLabelEl = document.getElementById('tzLabel');
+
+  function fmtOffset(o){ return 'UTC' + (o < 0 ? '−' : '+') + Math.abs(o); }
+
+  ZONES.forEach(function(z){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tz-item';
+    b.setAttribute('role', 'option');
+    b.setAttribute('aria-selected', 'false');
+    b.dataset.off = String(z.off);
+    b.innerHTML = '<span class="flag">' + z.flag + '</span>' +
+                  '<span class="off">' + fmtOffset(z.off) + '</span>' +
+                  '<span class="city">' + z.city + ' · ' + z.country + '</span>';
+    tzMenu.appendChild(b);
+  });
+
+  function applyZone(off, save){
+    const z = ZONES.find(function(x){ return x.off === off; }) || ZONES.find(function(x){ return x.off === 1; });
+    tzFlagEl.textContent = z.flag;
+    tzLabelEl.textContent = fmtOffset(z.off);
+    tzBtn.title = 'Fuseau horaire : ' + z.city + ' (' + fmtOffset(z.off) + ') — cliquer pour changer';
+
+    tzMenu.querySelectorAll('.tz-item').forEach(function(el){
+      el.setAttribute('aria-selected', String(Number(el.dataset.off) === z.off));
+    });
+
+    // 00:00 local time at UTC+z.off  =  00:00 UTC minus z.off hours
+    target = Date.UTC(2026, 10, 19, 0, 0, 0) - z.off * 3600000;
+    preloadTarget = Date.UTC(2026, 10, 12, 0, 0, 0) - z.off * 3600000;
+    tick();
+    preloadTick();
+
+    if(save){
+      try{ localStorage.setItem('gta6-tz-offset', String(z.off)); }catch(e){}
+    }
+  }
+
+  function setTzOpen(open){
+    tzEl.classList.toggle('open', open);
+    tzBtn.setAttribute('aria-expanded', String(open));
+    if(open){
+      const sel = tzMenu.querySelector('[aria-selected="true"]');
+      if(sel){ tzMenu.scrollTop = sel.offsetTop - tzMenu.clientHeight / 2 + sel.offsetHeight / 2; }
+    }
+  }
+
+  tzBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    setTzOpen(!tzEl.classList.contains('open'));
+  });
+
+  tzMenu.addEventListener('click', function(e){
+    const item = e.target.closest('.tz-item');
+    if(!item) return;
+    applyZone(Number(item.dataset.off), true);
+    setTzOpen(false);
+    tzBtn.focus();
+  });
+
+  document.addEventListener('click', function(e){
+    if(!tzEl.contains(e.target)) setTzOpen(false);
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && tzEl.classList.contains('open')){
+      setTzOpen(false);
+      tzBtn.focus();
+    }
+  });
+
+  let savedTz = null;
+  try{ savedTz = localStorage.getItem('gta6-tz-offset'); }catch(e){}
+  const initialOff = (savedTz !== null && ZONES.some(function(z){ return z.off === Number(savedTz); })) ? Number(savedTz) : 1;
+  applyZone(initialOff, false);
 </script>
 </body>
 </html>
